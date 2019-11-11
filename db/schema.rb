@@ -10,36 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_11_115818) do
+ActiveRecord::Schema.define(version: 2019_11_11_172056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "moves", force: :cascade do |t|
-    t.string "name"
-    t.bigint "move_id"
+  create_table "games", force: :cascade do |t|
+    t.string "player_1_name"
+    t.string "player_2_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["move_id"], name: "index_moves_on_move_id"
   end
 
-  create_table "players", force: :cascade do |t|
+  create_table "movements", force: :cascade do |t|
     t.string "name"
+    t.bigint "movement_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["movement_id"], name: "index_movements_on_movement_id"
   end
 
   create_table "rounds", force: :cascade do |t|
-    t.integer "player_1_id"
-    t.integer "player_2_id"
-    t.integer "player_1_wins"
-    t.integer "player_2_wins"
-    t.bigint "player_id"
+    t.bigint "game_id"
+    t.bigint "player_1_movement_id"
+    t.bigint "player_2_movement_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["player_id"], name: "index_rounds_on_player_id"
+    t.index ["game_id"], name: "index_rounds_on_game_id"
+    t.index ["player_1_movement_id"], name: "index_rounds_on_player_1_movement_id"
+    t.index ["player_2_movement_id"], name: "index_rounds_on_player_2_movement_id"
   end
 
-  add_foreign_key "moves", "moves"
-  add_foreign_key "rounds", "players"
+  add_foreign_key "movements", "movements"
+  add_foreign_key "rounds", "games"
+  add_foreign_key "rounds", "movements", column: "player_1_movement_id"
+  add_foreign_key "rounds", "movements", column: "player_2_movement_id"
 end
